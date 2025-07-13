@@ -10,6 +10,7 @@ export default function TodoList() {
   const [input, setInput] = useState('');
   const [editingId, setEditingId] = useState<number | null>(null);
   const [editingText, setEditingText] = useState('');
+
   const addItem = () => {
     if (input.trim() === '') return;
     setItems([...items, { id: Date.now(), text: input.trim() }]);
@@ -53,10 +54,10 @@ export default function TodoList() {
         </button>
       </div>
       <ul className="todo-items">
-        {items.map((item) => (
-          <li key={item.id} className="todo-item">
-            {editingId === item.id ? (
-              <>
+        {items.map((item) => {
+          if (editingId === item.id) {
+            return (
+              <li key={item.id} className="todo-item">
                 <input
                   value={editingText}
                   onChange={(e) => setEditingText(e.target.value)}
@@ -65,23 +66,37 @@ export default function TodoList() {
                   }}
                   aria-label="edit-input"
                 />
-                <button type="button" onClick={() => saveEdit(item.id)} aria-label="save-item">
+                <button
+                  type="button"
+                  onClick={() => saveEdit(item.id)}
+                  aria-label="save-item"
+                >
                   Save
                 </button>
-              </>
-            ) : (
-              <>
-                <span>{item.text}</span>
-                <button type="button" onClick={() => startEdit(item)} aria-label="edit-item">
-                  Edit
-                </button>
-                <button type="button" onClick={() => removeItem(item.id)} aria-label="delete-item">
-                  Delete
-                </button>
-              </>
-              )
+              </li>
+            );
+          }
+
+          return (
+            <li key={item.id} className="todo-item">
+              <span>{item.text}</span>
+              <button
+                type="button"
+                onClick={() => startEdit(item)}
+                aria-label="edit-item"
+              >
+                Edit
+              </button>
+              <button
+                type="button"
+                onClick={() => removeItem(item.id)}
+                aria-label="delete-item"
+              >
+                Delete
+              </button>
             </li>
-          ))}
+          );
+        })}
       </ul>
     </div>
   );
